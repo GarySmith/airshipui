@@ -5,11 +5,13 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	// "path/filepath"
 
 	homedir "github.com/mitchellh/go-homedir"
 	ps "github.com/mitchellh/go-ps"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"opendev.org/airship/airshipui/internal/environment"
 )
 
 var (
@@ -19,12 +21,10 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "airshipui",
-	Short: "airshipui is a graphical user interface for airship",
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
-	Run: runOctantOrPlugin,
+	Use:     "airshipui",
+	Short:   "airshipui is a graphical user interface for airship",
+	Run:     runOctantOrPlugin,
+	Version: environment.Version(),
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -72,7 +72,8 @@ func initConfig() {
 }
 
 func runOctantOrPlugin(cmd *cobra.Command, args []string) {
-	fmt.Printf("Hello, world: %t\n", disableAuto)
+	// fmt.Printf("arg0: %s\n", cmd.commandCalledAs.name)
+
 	launchOctant := true
 	if !disableAuto {
 		ppid := os.Getppid()
@@ -87,9 +88,11 @@ func runOctantOrPlugin(cmd *cobra.Command, args []string) {
 	}
 
 	if launchOctant {
-		cmd := exec.Command("octant")
+		// whereami := ""
+
+		command := exec.Command("octant")
 		fmt.Println("Launching octant\n")
-		err := cmd.Run()
+		err := command.Run()
 		log.Printf("Command finished with error: %v", err)
 	} else {
 		LaunchPlugin(cmd, args)
