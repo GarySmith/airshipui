@@ -21,6 +21,11 @@ endif
 DIRS = internal pkg
 RECURSIVE_DIRS = $(addsuffix /...,$(DIRS))
 
+.PHONY: build
+build:
+	mkdir -p build
+	go build -o build/airshipui main.go
+
 .PHONY: install-plugin
 install-plugin:
 	mkdir -p $(OCTANT_PLUGINSTUB_DIR)
