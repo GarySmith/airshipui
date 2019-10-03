@@ -6,7 +6,7 @@ SHELL=/bin/bash
 GIT_VERSION=$(shell git describe --match 'v*' --always)
 
 # Override the value of the version variable in main.go
-LD_FLAGS= '-X main.version=$(GIT_VERSION)'
+LD_FLAGS= '-X opendev.org/airship/airshipui/internal/environment.version=$(GIT_VERSION)'
 GO_FLAGS= -ldflags=$(LD_FLAGS)
 
 ifdef XDG_CONFIG_HOME
@@ -23,8 +23,8 @@ RECURSIVE_DIRS = $(addsuffix /...,$(DIRS))
 
 .PHONY: build
 build:
-	mkdir -p build
-	go build -o build/airshipui main.go
+	mkdir -p bin
+	go build -o bin/airshipui $(GO_FLAGS) main.go
 
 .PHONY: install-plugin
 install-plugin:
