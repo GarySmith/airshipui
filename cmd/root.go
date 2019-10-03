@@ -2,14 +2,18 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
+	ps "github.com/mitchellh/go-ps"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var (
+	cfgFile     string
+	disableAuto bool
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -36,9 +40,7 @@ func init() {
 	// Define glags and configuration settings
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.airshipui.yaml)")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().BoolVarP(&disableAuto, "no-auto", "n", false, "Disable auto-detection for deciding whether to run the plugin")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -68,5 +70,23 @@ func initConfig() {
 }
 
 func runOctantOrPlugin(cmd *cobra.Command, args []string) {
-	fmt.Println("Hello, world")
+	fmt.Printf("Hello, world: %t\n", disableAuto)
+	launchOctant := true
+	if !disableAuto {
+		ppid := os.Getppid()
+		proc, err := ps.FindProcess(ppid)
+		if err == nil {
+			parentName := proc.Executable()
+
+			if parentName == "airshipui" || parentName == "octant" {
+				launchOctant = false
+			}
+		}
+	}
+
+	if launchOctant {
+		fmt.Println("Launching octant\n")
+	} else {
+		LaunchPlugin(cmd, args)
+	}
 }
