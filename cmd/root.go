@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"os/exec"
 
 	homedir "github.com/mitchellh/go-homedir"
 	ps "github.com/mitchellh/go-ps"
@@ -85,7 +87,10 @@ func runOctantOrPlugin(cmd *cobra.Command, args []string) {
 	}
 
 	if launchOctant {
+		cmd := exec.Command("octant")
 		fmt.Println("Launching octant\n")
+		err := cmd.Run()
+		log.Printf("Command finished with error: %v", err)
 	} else {
 		LaunchPlugin(cmd, args)
 	}
