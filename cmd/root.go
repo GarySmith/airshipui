@@ -5,7 +5,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	// "path/filepath"
+	"path/filepath"
+	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
 	ps "github.com/mitchellh/go-ps"
@@ -88,13 +89,21 @@ func runOctantOrPlugin(cmd *cobra.Command, args []string) {
 	}
 
 	if launchOctant {
-		// whereami := ""
+		myCmd, err := os.Executable()
+		if err == nil {
+			exePath := filepath.Dir(myCmd)
+			pluginPath := os.Getenv("OCTANT_PLUGIN_PATH")
+			pathList := append(filepath.SplitList(pluginPath), exePath)
+			pluginPath = strings.Join(pathList, string(os.PathListSeparator))
+			os.Setenv("OCTANT_PLUGIN_PATH", pluginPath)
 
-		command := exec.Command("octant")
-		fmt.Println("Launching octant\n")
-		err := command.Run()
-		log.Printf("Command finished with error: %v", err)
+			command := exec.Command("octant")
+			fmt.Printf("Launching octant with plugin path: %s\n", pluginPath)
+			err := command.Run()
+			log.Printf("Command finished with error: %v", err)
+		}
 	} else {
+		fmt.Printf("Launching airshipui as a plugin\n")
 		LaunchPlugin(cmd, args)
 	}
 }
