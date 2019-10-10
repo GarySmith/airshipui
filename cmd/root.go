@@ -73,7 +73,6 @@ func initConfig() {
 }
 
 func runOctantOrPlugin(cmd *cobra.Command, args []string) {
-	// fmt.Printf("arg0: %s\n", cmd.commandCalledAs.name)
 
 	launchOctant := true
 	if !disableAuto {
@@ -95,15 +94,15 @@ func runOctantOrPlugin(cmd *cobra.Command, args []string) {
 			pluginPath := os.Getenv("OCTANT_PLUGIN_PATH")
 			pathList := append(filepath.SplitList(pluginPath), exePath)
 			pluginPath = strings.Join(pathList, string(os.PathListSeparator))
-			os.Setenv("OCTANT_PLUGIN_PATH", pluginPath)
+			//os.Setenv("OCTANT_PLUGIN_PATH", pluginPath)
 
-			command := exec.Command("octant")
-			fmt.Printf("Launching octant with plugin path: %s\n", pluginPath)
+			command := exec.Command("/projects/octant/build/octant","-v")
+			log.Printf("Launching octant with plugin path: %s\n", pluginPath)
 			err := command.Run()
 			log.Printf("Command finished with error: %v", err)
 		}
 	} else {
-		fmt.Printf("Launching airshipui as a plugin\n")
+		// fmt.Printf("Launching airshipui as a plugin\n")
 		LaunchPlugin(cmd, args)
 	}
 }
