@@ -9,6 +9,6 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/viper v1.4.0
-	github.com/vmware/octant v0.7.0
-	k8s.io/apimachinery v0.0.0-20190612205821-1799e75a0719
+	github.com/vmware-tanzu/octant v0.9.1
+	k8s.io/apimachinery v0.0.0-20191016225534-b1267f8c42b4
 )
